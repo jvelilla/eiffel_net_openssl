@@ -1,0 +1,13 @@
+# OpenSSL support for EiffelNet #
+
+Status: suspended not-working linux-only
+
+This code is the result of an old patch from Guus Leeuw jr.  (from itpassion.com)
+updated by Jocelyn Fiat to void-safety and provided as an extension to EiffelNet.
+
+This supports only Linux so far
+And in latest try on ubuntu, we had C compilation error 
+"undefined reference to `SSLv2_client_method' "
+
+This "project" is open for contribution, and looking for maintainer.
+
