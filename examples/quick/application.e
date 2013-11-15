@@ -28,7 +28,7 @@ feature {NONE} -- Initialization
 			timeout: INTEGER
 			l_socket: SSL_NETWORK_STREAM_SOCKET
 		do
-			host := "samplechat.firebaseio-demo.com"
+			host := "www.openssl.org"
 			port := 443
 
 			if argument_count > 0  then
@@ -74,6 +74,14 @@ feature {NONE} -- Initialization
 
 						-- Since this is the client, we will initiate the talking.
 				client_get.append ("%R%N")
+				client_get.append("Host: samplechat.firebaseio-demo.com")
+				client_get.append ("%R%N")
+				client_get.append("Cache-Control: max-age=0")
+				client_get.append ("%R%N")
+				client_get.append ("Accept:*/*;q=0.8")
+				client_get.append ("%R%N")
+				client_get.append ("Connection: keep-alive")
+				client_get.append ("%R%N")
 				client_get.append ("%R%N")
 
 				send_message_and_receive_reply (l_socket, client_get)
@@ -107,14 +115,15 @@ feature {NONE} --Implementation
 			a_data: MANAGED_POINTER
 			c_string: C_STRING
 		do
-			create c_string.make (message)
-			create a_data.make_from_pointer (c_string.item, message.count + 1)
-			create a_package.make_from_managed_pointer (a_data)
-			a_socket.send (a_package, 1)
+--			create c_string.make (message)
+--			create a_data.make_from_pointer (c_string.item, message.count + 1)
+--			create a_package.make_from_managed_pointer (a_data)
+--			a_socket.send (a_package, 1)
+			a_socket.put_string (message)
 		end
 
 
-	receive_reply (a_socket: SOCKET)
+	receive_reply (a_socket: SSL_NETWORK_STREAM_SOCKET)
 		require
 			valid_socket: a_socket /= Void and then a_socket.is_open_read
 		local
@@ -129,7 +138,7 @@ feature {NONE} --Implementation
 		end
 
 
-	receive_data (a_socket: SOCKET): STRING
+	receive_data (a_socket: SSL_NETWORK_STREAM_SOCKET): STRING
 		local
 			end_of_stream: BOOLEAN
 		do
@@ -149,7 +158,7 @@ feature {NONE} --Implementation
 		end
 
 
-	client_get: STRING = "GET /users/jack/name.json"
+	client_get: STRING = "GET / HTTP/1.1"
 
 
 --https://samplechat.firebaseio-demo.com/users/jack/name.json
