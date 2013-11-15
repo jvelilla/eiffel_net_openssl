@@ -28,8 +28,8 @@ feature {NONE} -- Initialization
 			timeout: INTEGER
 			l_socket: SSL_NETWORK_STREAM_SOCKET
 		do
-			host := "localhost"
-			port := 12111
+			host := "samplechat.firebaseio-demo.com"
+			port := 443
 
 			if argument_count > 0  then
 				host := argument (1)
@@ -48,7 +48,7 @@ feature {NONE} -- Initialization
 				set_ipv4_stack_preferred (True)
 			end
 
-			io.put_string ("start echo_client")
+			io.put_string ("start ssl_client")
 			io.put_string (" host = ")
 			io.put_string (host)
 			io.put_string (", port = ")
@@ -64,7 +64,7 @@ feature {NONE} -- Initialization
 					-- Create the socket connection to the Echo Server.
 				create l_socket.make_client_by_address_and_port (address, port)
 					-- Set the connection timeout
-				l_socket.set_connect_timeout (timeout)
+--				l_socket.set_connect_timeout (100)
 					-- Connect to the Server
 				l_socket.connect
 				if not l_socket.is_connected then
@@ -73,14 +73,11 @@ feature {NONE} -- Initialization
 				else
 
 						-- Since this is the client, we will initiate the talking.
-					send_message_and_receive_reply (l_socket, "Hello")
-					send_message_and_receive_reply (l_socket, "This")
-					send_message_and_receive_reply (l_socket, "is")
-					send_message_and_receive_reply (l_socket, "a")
-					send_message_and_receive_reply (l_socket, "test")
+				client_get.append ("%R%N")
+				client_get.append ("%R%N")
 
-						-- Send the special string to tell server to quit.
-					send_message (l_socket, "quit")
+				send_message_and_receive_reply (l_socket, client_get)
+
 
 						-- Close the connection
 					l_socket.close
@@ -92,7 +89,7 @@ feature {NONE} -- Initialization
 
 feature {NONE} --Implementation
 
-	send_message_and_receive_reply (a_socket: SOCKET; message: STRING)
+	send_message_and_receive_reply (a_socket: SSL_NETWORK_STREAM_SOCKET; message: STRING)
 		require
 			valid_socket: a_socket /= Void and then a_socket.is_open_read and then a_socket.is_open_write
 			valid_message: message /= Void and then not message.is_empty
@@ -101,13 +98,21 @@ feature {NONE} --Implementation
 			receive_reply (a_socket)
 		end
 
-	send_message (a_socket: SOCKET; message: STRING)
+	send_message (a_socket: SSL_NETWORK_STREAM_SOCKET; message: STRING)
 		require
 			valid_socket: a_socket /= Void and then a_socket.is_open_write
 			valid_message: message /= Void and then not message.is_empty
+		local
+			a_package: PACKET
+			a_data: MANAGED_POINTER
+			c_string: C_STRING
 		do
-			a_socket.put_string (message + "%N")
+			create c_string.make (message)
+			create a_data.make_from_pointer (c_string.item, message.count + 1)
+			create a_package.make_from_managed_pointer (a_data)
+			a_socket.send (a_package, 1)
 		end
+
 
 	receive_reply (a_socket: SOCKET)
 		require
@@ -115,12 +120,37 @@ feature {NONE} --Implementation
 		local
 			l_last_string: detachable STRING
 		do
-			a_socket.read_line
-			l_last_string := a_socket.last_string
+
+			l_last_string := receive_data (a_socket)
 			check l_last_string_attached: l_last_string /= Void end
 			io.put_string ("Server Says: ")
 			io.put_string (l_last_string)
 			io.put_new_line
 		end
 
+
+	receive_data (a_socket: SOCKET): STRING
+		local
+			end_of_stream: BOOLEAN
+		do
+			from
+				a_socket.read_line
+				Result := ""
+			until
+				end_of_stream
+			loop
+					Result.append (a_socket.last_string)
+					if a_socket.last_string /= void and not a_socket.last_string.is_empty and a_socket.socket_ok then
+						a_socket.read_line
+					else
+						end_of_stream := True
+					end
+			end
+		end
+
+
+	client_get: STRING = "GET /users/jack/name.json"
+
+
+--https://samplechat.firebaseio-demo.com/users/jack/name.json
 end

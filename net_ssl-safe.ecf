@@ -28,5 +28,27 @@
 				<platform excluded_value="windows"/>
 			</condition>
 		</external_linker_flag>
+		
+		<external_include location="C:\OpenSSL-Win64\include">
+			<condition>
+				<platform value="windows"/>
+			</condition>
+		</external_include>
+		<external_object location="ssleay32.lib">
+			<condition>
+				<platform value="windows"/>
+			</condition>
+		</external_object>
+		<external_object location="libeay32.lib">
+			<condition>
+				<platform value="windows"/>
+			</condition>
+		</external_object>
+		<external_cflag value="-D_WINSOCKAPI_">
+			<condition>
+				<platform value="windows"/>
+			</condition>
+		</external_cflag>
+		
 	</target>
 </system>
