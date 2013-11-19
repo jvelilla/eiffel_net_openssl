@@ -49,9 +49,9 @@ feature {NONE} -- Initialization
 
 				-- Create the Server socket
 			create listen_socket.make_server_by_port (port)
-			create a_file_name.make_from_string ("/etc/pki/tls/certs/powerdesk.itpassion.com.crt")
+			create a_file_name.make_from_string ("C:/OpenSSL-Win64/bin/ca.crt")
 			listen_socket.set_certificate_file_name (a_file_name)
-			create a_file_name.make_from_string ("/etc/pki/tls/private/powerdesk.itpassion.com.key")
+			create a_file_name.make_from_string ("C:/OpenSSL-Win64/bin/ca.key")
 			listen_socket.set_key_file_name (a_file_name)
 
 			if not listen_socket.is_bound then

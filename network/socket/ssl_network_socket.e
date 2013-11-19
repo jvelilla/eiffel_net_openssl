@@ -26,7 +26,7 @@ feature
 
 			if is_connected then
 					--| The NETWORK_SOCKET is connected, we can setup the SSL context
-				create l_context.make_as_sslv3_client
+				create l_context.make_as_tlsv12_client
 				context := l_context
 				l_context.create_ssl
 				if attached l_context.last_ssl as l_ssl then
