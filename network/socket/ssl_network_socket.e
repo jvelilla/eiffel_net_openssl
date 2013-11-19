@@ -14,6 +14,8 @@ inherit
 			connect, shutdown
 		end
 
+	SSL_PROTOCOL_SOCKET
+
 feature
 
 	connect
@@ -26,7 +28,13 @@ feature
 
 			if is_connected then
 					--| The NETWORK_SOCKET is connected, we can setup the SSL context
-				create l_context.make_as_tlsv12_client
+
+				if tls_protocol.same_string ({SSL_PROTOCOL}.ssl_23) then
+					create l_context.make_as_sslv3_client
+				else
+					--| By default tlsv1.2
+					create l_context.make_as_tlsv12_client
+				end
 				context := l_context
 				l_context.create_ssl
 				if attached l_context.last_ssl as l_ssl then
@@ -58,6 +66,9 @@ feature {NONE} -- Attributes
 
 	context: detachable SSL_CONTEXT;
 			-- The SSL structure used in the SSL/TLS communication
+
+
+
 
 note
 	copyright:	"Copyright (c) 1984-2013, Eiffel Software and others"

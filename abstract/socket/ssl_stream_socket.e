@@ -14,6 +14,8 @@ inherit
 			accepted
 		end
 
+	SSL_PROTOCOL_SOCKET
+
 feature
 
 	accepted: detachable like Current;
@@ -26,7 +28,11 @@ feature -- SSL
 		local
 			l_context: like context
 		do
-			create l_context.make_as_sslv23_server
+			if tls_protocol.same_string ({SSL_PROTOCOL}.ssl_23) then
+				create l_context.make_as_sslv23_server
+			else
+				create l_context.make_as_tlsv12_server
+			end
 			context := l_context
 			if a_cert_file /= Void then
 				l_context.use_certificate_file (a_cert_file)
