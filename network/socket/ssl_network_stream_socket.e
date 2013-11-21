@@ -25,7 +25,7 @@ inherit
 		rename
 			context as ssl_network_socket_context
 		undefine
-			support_storable, read_to_managed_pointer
+			support_storable, read_to_managed_pointer, readstream, read_stream, write
 		redefine
 			shutdown, close_socket
 		end
@@ -35,7 +35,7 @@ inherit
 			exists, is_valid_peer_address, is_valid_family, address_type,
 			set_non_blocking, set_blocking
 		redefine
-			put_managed_pointer, read_to_managed_pointer, shutdown
+			put_managed_pointer, read_to_managed_pointer, shutdown, readstream, read_stream, send, write
 		end
 
 create
@@ -56,8 +56,10 @@ feature -- Initialization
 			create last_string.make_empty
 			make_socket
 			timeout := default_timeout
+			set_tls_protocol (default_tls_protocol)
 		ensure
 			timeout_set_to_default: timeout = default_timeout
+			tls_protocol_set_to_default: tls_protocol = default_tls_protocol
 		end
 
 	make_client_by_port (a_peer_port: INTEGER; a_peer_host: STRING)
@@ -129,10 +131,12 @@ feature {SSL_NETWORK_STREAM_SOCKET} -- Initialization
 			is_open_write := True
 			timeout := default_timeout
 			create last_string.make_empty
+			set_tls_protocol (default_tls_protocol)
 		ensure
 			address_set: address = a_address
 			family_valid: family = a_address.family;
 			opened_all: is_open_write and is_open_read
+			tls_protocol_set_to_default: tls_protocol = default_tls_protocol
 		end
 
 	create_from_descriptor (a_fd: INTEGER)
@@ -223,6 +227,35 @@ feature -- Access
 
 feature -- Input
 
+	read_stream, readstream (nb_char: INTEGER)
+			-- Read a string of at most `nb_char' characters.
+			-- Make result available in `last_string'.
+		local
+			ext: C_STRING
+			return_val: INTEGER
+			l_context: detachable SSL_CONTEXT
+		do
+			if context /= Void then
+				l_context := context
+			elseif ssl_network_socket_context /= Void then
+				l_context := ssl_network_socket_context
+			end
+			if l_context /= Void and then attached l_context.last_ssl as l_ssl then
+				create ext.make_empty (nb_char + 1)
+				return_val :=l_ssl.read (ext.item , nb_char)
+				bytes_read := return_val
+				if return_val >= 0 then
+					ext.set_count (return_val)
+					last_string := ext.substring (1, return_val)
+				else
+					last_string.wipe_out
+				end
+			else
+				check has_context: False end
+			end
+		end
+
+
 	read_to_managed_pointer (p: MANAGED_POINTER; start_pos, nb_bytes: INTEGER)
 			-- Read at most `nb_bytes' bound bytes and make result available in `p' at position
 			-- `start_pos'
@@ -254,6 +287,33 @@ feature -- Input
 		end
 
 feature -- Output
+
+	write (a_packet: PACKET)
+			-- Write packet `a_packet' to socket.
+		local
+			ext_data: POINTER
+			count: INTEGER
+			l_context: detachable SSL_CONTEXT
+		do
+			if context /= Void then
+				l_context := context
+			elseif ssl_network_socket_context /= Void then
+				l_context := ssl_network_socket_context
+			end
+			if l_context /= Void and then attached l_context.last_ssl as l_ssl  then
+				ext_data := a_packet.data.item
+				count := a_packet.count
+				l_ssl.write (ext_data, count)
+			else
+				check has_last_ssl: False end
+			end
+		end
+
+	send (a_packet: PACKET; flags: INTEGER)
+			-- Send a packet `a_packet' of data to socket.
+		do
+			write (a_packet)
+		end
 
 	put_managed_pointer (p: MANAGED_POINTER; start_pos, nb_bytes: INTEGER)
 			-- Put data of length `nb_bytes' pointed by `start_pos' index in `p' at current position

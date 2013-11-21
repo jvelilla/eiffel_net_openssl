@@ -31,7 +31,7 @@ feature {NONE} -- Initialization
 feature -- Access
 
 	accept
-			-- Accept the SSL Socket
+			-- Accept the SSL Socket.
 		local
 			err: INTEGER
 		do
@@ -39,7 +39,7 @@ feature -- Access
 		end
 
 	connect
-			-- Connect the SSL Socket
+			-- Connect the SSL Socket.
 		local
 			err: INTEGER
 			ssl_err: INTEGER_64
@@ -60,19 +60,19 @@ feature -- Access
 		end
 
 	free
-			-- Free the underlying SSL Structure
+			-- Free the underlying SSL Structure.
 		do
 			c_ssl_free (ptr)
 		end
 
 	set_fd (an_fd: INTEGER)
-			-- Set the SSL Socket File Descriptor to `an_fd'
+			-- Set the SSL Socket File Descriptor to `an_fd'.
 		do
 			c_ssl_set_fd (ptr, an_fd)
 		end
 
 	shutdown
-			-- Shutdown the SSL Socket
+			-- Shutdown the SSL Socket.
 		do
 			c_ssl_shutdown (ptr)
 		end
@@ -190,15 +190,15 @@ feature {NONE} -- Externals
 		end
 
 note
-	copyright:	"Copyright (C) 2010 by ITPassion Ltd, Eiffel Software and others"
+	copyright:	"Copyright (c) 1984-2013, Eiffel Software and others"
 	license:	"Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source:		"[
-					ITPassion Ltd
-					5 Anstice Close, Chiswick, Middlesex, W4 2RJ, United Kingdom
-					Telephone +44 208 742 3422, Fax +44 208 742 3468
-					Website http://www.itpassion.com
-					Customer support https://powerdesk.itpassion.com
-				]"
+			Eiffel Software
+			5949 Hollister Ave., Goleta, CA 93117 USA
+			Telephone 805-685-1006, Fax 805-685-6869
+			Website http://www.eiffel.com
+			Customer support http://support.eiffel.com
+		]"
 
 end
 

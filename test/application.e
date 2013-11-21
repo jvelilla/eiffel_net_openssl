@@ -97,7 +97,7 @@ feature {NONE} --Implementation
 			valid_socket: a_socket /= Void and then a_socket.is_open_read and then a_socket.is_open_write
 			valid_message: message /= Void and then not message.is_empty
 		do
-			send_message (a_socket, message)
+			send_message_ssl (a_socket, message)
 			receive_reply (a_socket)
 		end
 
@@ -107,6 +107,21 @@ feature {NONE} --Implementation
 			valid_message: message /= Void and then not message.is_empty
 		do
 			a_socket.put_string (message)
+		end
+
+	send_message_ssl (a_socket: SSL_NETWORK_STREAM_SOCKET; message: STRING)
+		require
+			valid_socket: a_socket /= Void and then a_socket.is_open_write
+			valid_message: message /= Void and then not message.is_empty
+		local
+			a_package: PACKET
+			a_data: MANAGED_POINTER
+			c_string: C_STRING
+		do
+			create c_string.make (message)
+			create a_data.make_from_pointer (c_string.item, message.count + 1)
+			create a_package.make_from_managed_pointer (a_data)
+			a_socket.send (a_package, 1)
 		end
 
 	receive_reply (a_socket: SSL_NETWORK_STREAM_SOCKET)
@@ -129,14 +144,14 @@ feature {NONE} --Implementation
 			end_of_stream: BOOLEAN
 		do
 			from
-				a_socket.read_line
+				a_socket.read_stream (1024)
 				Result := ""
 			until
 				end_of_stream
 			loop
 				Result.append (a_socket.last_string)
 				if a_socket.last_string /= void and not a_socket.last_string.is_empty and a_socket.socket_ok then
-					a_socket.read_line
+					a_socket.read_stream (1024)
 				else
 					end_of_stream := True
 				end

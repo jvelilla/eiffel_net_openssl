@@ -1,5 +1,5 @@
 note
-	description:	"SSL context"
+	description:	"SSL context,  loads up the algorithms that OpenSSL will be using and also loads the errors Strings."
 	legal:			"See notice at end of class"
 	status:			"See notice at end of class"
 	date:			"$Date$"
@@ -11,7 +11,7 @@ class
 feature {NONE} -- Initialization
 
 	initialize_ssl
-			-- Initialize the SSL Library
+			-- Initialize the SSL Library.
 		do
 			if ssl_initialized.item = False then
 				c_ssleay_add_ssl_algorithms
@@ -32,7 +32,7 @@ feature {NONE} -- Attributes
 feature {NONE} -- Externals
 
 	c_ssl_load_error_strings
-			-- External call to SSL_load_error_strings
+			-- External call to SSL_load_error_strings.
 		external
 			"C use <openssl/ssl.h>"
 		alias
@@ -40,7 +40,7 @@ feature {NONE} -- Externals
 		end
 
 	c_ssleay_add_ssl_algorithms
-			-- External call to SSLeay_add_ssl_algorithms
+			-- External call to SSLeay_add_ssl_algorithms.
 		external
 			"C use <openssl/ssl.h>"
 		alias
@@ -48,14 +48,14 @@ feature {NONE} -- Externals
 		end
 
 note
-	copyright:	"Copyright (C) 2010 by ITPassion Ltd, Eiffel Software and others"
+	copyright:	"Copyright (c) 1984-2013, Eiffel Software and others"
 	license:	"Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
 	source:		"[
-					ITPassion Ltd
-					5 Anstice Close, Chiswick, Middlesex, W4 2RJ, United Kingdom
-					Telephone +44 208 742 3422, Fax +44 208 742 3468
-					Website http://www.itpassion.com
-					Customer support https://powerdesk.itpassion.com
-				]"
+			Eiffel Software
+			5949 Hollister Ave., Goleta, CA 93117 USA
+			Telephone 805-685-1006, Fax 805-685-6869
+			Website http://www.eiffel.com
+			Customer support http://support.eiffel.com
+		]"
 
 end
