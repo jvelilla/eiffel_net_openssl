@@ -56,10 +56,10 @@ feature -- Initialization
 			create last_string.make_empty
 			make_socket
 			timeout := default_timeout
-			set_tls_protocol ({SSL_PROTOCOL}.tls_1_2)
+			set_tls_protocol (default_tls_protocol)
 		ensure
 			timeout_set_to_default: timeout = default_timeout
-			tls_protocol_set_to_default: tls_protocol.same_string ({SSL_PROTOCOL}.tls_1_2)
+			tls_protocol_set_to_default: tls_protocol = default_tls_protocol
 		end
 
 	make_client_by_port (a_peer_port: INTEGER; a_peer_host: STRING)
@@ -131,12 +131,12 @@ feature {SSL_NETWORK_STREAM_SOCKET} -- Initialization
 			is_open_write := True
 			timeout := default_timeout
 			create last_string.make_empty
-			set_tls_protocol ({SSL_PROTOCOL}.tls_1_2)
+			set_tls_protocol (default_tls_protocol)
 		ensure
 			address_set: address = a_address
 			family_valid: family = a_address.family;
 			opened_all: is_open_write and is_open_read
-			tls_protocol_set_to_default: tls_protocol.same_string ({SSL_PROTOCOL}.tls_1_2)
+			tls_protocol_set_to_default: tls_protocol = default_tls_protocol
 		end
 
 	create_from_descriptor (a_fd: INTEGER)

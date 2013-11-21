@@ -31,7 +31,7 @@ feature {NONE} -- Initialization
 feature -- Access
 
 	accept
-			-- Accept the SSL Socket
+			-- Accept the SSL Socket.
 		local
 			err: INTEGER
 		do
@@ -39,7 +39,7 @@ feature -- Access
 		end
 
 	connect
-			-- Connect the SSL Socket
+			-- Connect the SSL Socket.
 		local
 			err: INTEGER
 			ssl_err: INTEGER_64
@@ -60,19 +60,19 @@ feature -- Access
 		end
 
 	free
-			-- Free the underlying SSL Structure
+			-- Free the underlying SSL Structure.
 		do
 			c_ssl_free (ptr)
 		end
 
 	set_fd (an_fd: INTEGER)
-			-- Set the SSL Socket File Descriptor to `an_fd'
+			-- Set the SSL Socket File Descriptor to `an_fd'.
 		do
 			c_ssl_set_fd (ptr, an_fd)
 		end
 
 	shutdown
-			-- Shutdown the SSL Socket
+			-- Shutdown the SSL Socket.
 		do
 			c_ssl_shutdown (ptr)
 		end

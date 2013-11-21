@@ -1,5 +1,5 @@
 note
-	description: "Summary description for {SSL_PROTOCOL_SOCKET}."
+	description: "SSL context. Define tls protocols and the default one."
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
@@ -9,13 +9,20 @@ deferred class
 
 feature -- Access
 
-	tls_protocol: STRING
+	default_tls_protocol: NATURAL
+			-- Set tls_1_2 as default.
+		do
+			Result := {SSL_PROTOCOL}.tls_1_2
+		end
+
+	tls_protocol: NATURAL
 		-- TLS protocol, it could be Tlsv1.1 or Tlsv1.2, etc,
-		-- by default the protocol it's Tlsv1.2
+		-- by default the protocol it's Tlsv1.2.
 
 feature -- Change Element
 
-	set_tls_protocol (a_protocol: READABLE_STRING_8)
+	set_tls_protocol (a_protocol: NATURAL)
+			-- Set `tls_protocol' with `a_protoocol'.
 		do
 			tls_protocol := a_protocol
 		ensure

@@ -29,10 +29,18 @@ feature
 			if is_connected then
 					--| The NETWORK_SOCKET is connected, we can setup the SSL context
 
-				if tls_protocol.same_string ({SSL_PROTOCOL}.ssl_23) then
+				if tls_protocol = {SSL_PROTOCOL}.ssl_23 then
+					create l_context.make_as_sslv23_client
+				elseif tls_protocol = {SSL_PROTOCOL}.ssl_3 then
 					create l_context.make_as_sslv3_client
+				elseif tls_protocol = {SSL_PROTOCOL}.tls_1_0 then
+					create l_context.make_as_tlsv10_client
+				elseif tls_protocol = {SSL_PROTOCOL}.tls_1_1 then
+					create l_context.make_as_tlsv11_client
+				elseif tls_protocol = {SSL_PROTOCOL}.dtls_1_0 then
+					create l_context.make_as_dtlsv1_client
 				else
-					--| By default tlsv1.2
+						--| By default tlsv1.2
 					create l_context.make_as_tlsv12_client
 				end
 				context := l_context

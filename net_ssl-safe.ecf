@@ -16,10 +16,10 @@
 				<platform excluded_value="windows"/>
 			</condition>
 		</external_include>
-		<external_include location="C:\OpenSSL-Win64\include">
+		<external_include location="$(EIFFEL_LIBRARY)\eiffel_net_openssl\spec\include">
 			<condition>
 				<platform value="windows"/>
-			</condition>
+		</condition>
 		</external_include>
 		<external_cflag value="-D_WINSOCKAPI_">
 			<condition>
