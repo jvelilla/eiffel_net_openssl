@@ -24,7 +24,7 @@ feature {NONE} -- Attributes
 
 	ssl_initialized: BOOLEAN_REF
 			-- Have the SSL Library initialization routines been called?
-		once ("PROCESS")
+		once ("THREAD")
 			create Result
 			Result.set_item (False)
 		end

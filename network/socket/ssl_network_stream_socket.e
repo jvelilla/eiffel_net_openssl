@@ -215,6 +215,11 @@ feature -- Access
 					create l_accepted.make_from_descriptor_and_address (return, l_address.twin);
 					l_accepted.set_peer_address (pass_address)
 					l_accepted.initialize_server_ssl (certificate_file_name, key_file_name)
+					if is_blocking then
+						l_accepted.set_blocking
+					else
+						l_accepted.set_non_blocking
+					end
 					accepted := l_accepted
 				end
 			end
