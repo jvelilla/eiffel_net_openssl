@@ -197,7 +197,7 @@ feature -- Access
 			err := c_ssl_ctx_use_certificate_file (ctx, c_string.item, 1)
 			if err <= 0 then
 				create l_exception
-				l_exception.set_message ("Cannot load certificate file " + a_file_name.out)
+				l_exception.set_description ("Cannot load certificate file " + a_file_name.out)
 				l_exception.raise
 			end
 		end
@@ -213,13 +213,13 @@ feature -- Access
 			err := c_ssl_ctx_use_privatekey_file (ctx, c_string.item, 1)
 			if err <= 0 then
 				create l_exception
-				l_exception.set_message ("Cannot load private key file " + a_file_name.out)
+				l_exception.set_description ("Cannot load private key file " + a_file_name.out)
 				l_exception.raise
 			end
 			err := c_ssl_ctx_check_private_key (ctx)
 			if err = 0 then
 				create l_exception
-				l_exception.set_message ("Private key does not match public key in certificate!")
+				l_exception.set_description ("Private key does not match public key in certificate!")
 				l_exception.raise
 			end
 		end
