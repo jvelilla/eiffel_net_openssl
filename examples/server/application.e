@@ -2,6 +2,7 @@ note
 	description: "Single threaded echo server."
 	date: "$Date: 2009-05-08 11:53:02 -0700 (Fri, 08 May 2009) $"
 	revision: "$Revision: 78576 $"
+	EIS: "name:OpenSSL certificates how to", "src=http://pages.cs.wisc.edu/~zmiller/ca-howto/", "protocol=uri"
 
 class
 	APPLICATION
@@ -49,9 +50,9 @@ feature {NONE} -- Initialization
 
 				-- Create the Server socket
 			create listen_socket.make_server_by_port (port)
-			create a_file_name.make_from_string ("C:/OpenSSL-Win64/bin/ca.crt")
+			create a_file_name.make_from_string (ca_crt)
 			listen_socket.set_certificate_file_name (a_file_name)
-			create a_file_name.make_from_string ("C:/OpenSSL-Win64/bin/ca.key")
+			create a_file_name.make_from_string (ca_key)
 			listen_socket.set_key_file_name (a_file_name)
 
 			if not listen_socket.is_bound then
@@ -78,14 +79,8 @@ feature {NONE} -- Implementation
 		require
 			valid_socket: socket /= Void and then socket.is_bound
 		local
---			done: BOOLEAN
 			client_socket: detachable SSL_NETWORK_STREAM_SOCKET
 		do
---			from
---				done := False
---			until
---				done
---			loop
 				socket.accept
 				client_socket := socket.accepted
 				if client_socket = Void then
@@ -96,7 +91,6 @@ feature {NONE} -- Implementation
 				else
 					perform_client_communication (client_socket)
 				end
---			end
 		end
 
 	perform_client_communication (socket: SSL_NETWORK_STREAM_SOCKET)
@@ -163,5 +157,16 @@ feature {NONE} -- Implementation
 		do
 			client_socket.put_string (message + "%N")
 		end
+
+
+feature -- SSL Certificates
+
+			--| Chnage the following two path's to your own crt and key files.
+
+	ca_crt: STRING = "C:/OpenSSL-Win64/bin/ca.crt"
+		-- seff signed certificate.
+
+	ca_key: STRING = "C:/OpenSSL-Win64/bin/ca.key"
+		-- ca key.
 
 end
