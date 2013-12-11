@@ -8,7 +8,7 @@
 		<file_rule>
 			<exclude>/\.svn</exclude>
 		</file_rule>
-		<option warning="true" full_class_checking="true" is_attached_by_default="true" void_safety="transitional" namespace="EiffelSoftware.Library.NetSSL">
+		<option warning="true" full_class_checking="true" is_attached_by_default="true" void_safety="all" namespace="EiffelSoftware.Library.NetSSL">
 		</option>
 		<setting name="dotnet_naming_convention" value="true"/>
 		<external_include location="/usr/include">
@@ -19,7 +19,7 @@
 		<external_include location="$(EIFFEL_LIBRARY)\eiffel_net_openssl\spec\include">
 			<condition>
 				<platform value="windows"/>
-		</condition>
+			</condition>
 		</external_include>
 		<external_cflag value="-D_WINSOCKAPI_">
 			<condition>

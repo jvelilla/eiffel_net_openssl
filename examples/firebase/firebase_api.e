@@ -112,7 +112,6 @@ feature {NONE} -- Implementation
 			-- new uri (host + a_path)
 		local
 			l_path: STRING_32
-			l_query_string: STRING_32
 		do
 			if attached a_path as ll_path then
 				l_path := ll_path

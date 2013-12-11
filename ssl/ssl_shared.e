@@ -1,9 +1,9 @@
 note
-	description:	"SSL context,  loads up the algorithms that OpenSSL will be using and also loads the errors Strings."
-	legal:			"See notice at end of class"
-	status:			"See notice at end of class"
-	date:			"$Date$"
-	revision:		"$Revision$"
+	description: "SSL context,  loads up the algorithms that OpenSSL will be using and also loads the errors Strings."
+	legal: "See notice at end of class"
+	status: "See notice at end of class"
+	date: "$Date$"
+	revision: "$Revision$"
 
 class
 	SSL_SHARED
@@ -16,17 +16,16 @@ feature {NONE} -- Initialization
 			if ssl_initialized.item = False then
 				c_ssleay_add_ssl_algorithms
 				c_ssl_load_error_strings
-				ssl_initialized.set_item (True)
+				ssl_initialized.put (True)
 			end
 		end
 
 feature {NONE} -- Attributes
 
-	ssl_initialized: BOOLEAN_REF
+	ssl_initialized: CELL [BOOLEAN]
 			-- Have the SSL Library initialization routines been called?
 		once ("THREAD")
-			create Result
-			Result.set_item (False)
+			create Result.put (False)
 		end
 
 feature {NONE} -- Externals
@@ -48,9 +47,9 @@ feature {NONE} -- Externals
 		end
 
 note
-	copyright:	"Copyright (c) 1984-2013, Eiffel Software and others"
-	license:	"Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
-	source:		"[
+	copyright: "Copyright (c) 1984-2013, Eiffel Software and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+	source: "[
 			Eiffel Software
 			5949 Hollister Ave., Goleta, CA 93117 USA
 			Telephone 805-685-1006, Fax 805-685-6869

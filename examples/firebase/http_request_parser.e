@@ -131,8 +131,6 @@ feature -- Read Message
 		require
             input_readable: a_socket /= Void and then a_socket.is_open_read
     	local
-    		l_character_8 : detachable CHARACTER_8
-    		end_of_stream : BOOLEAN
     		l_index : INTEGER
     	do
     		from
