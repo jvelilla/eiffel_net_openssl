@@ -1,14 +1,15 @@
 note
-	description:	"SSL context"
-	legal:			"See notice at end of class"
-	status:			"See notice at end of class"
-	date:			"$Date$"
-	revision:		"$Revision$"
+	description: "SSL context"
+	legal: "See notice at end of class"
+	status: "See notice at end of class"
+	date: "$Date$"
+	revision: "$Revision$"
 
 class
 	SSL
 
 inherit
+
 	SSL_SHARED
 
 create
@@ -24,7 +25,6 @@ feature {NONE} -- Initialization
 				--| Initialize SSL, as this may be one of the entry points into SSL where it is
 				--| useful to initialize the SSL Library
 			initialize_ssl
-
 			ptr := c_ssl_new (a_ctx_ptr)
 		end
 
@@ -34,8 +34,23 @@ feature -- Access
 			-- Accept the SSL Socket.
 		local
 			err: INTEGER
+			ssl_err: INTEGER_64
+			l_string: STRING
 		do
 			err := c_ssl_accept (ptr)
+			io.error.putstring ("c_ssl_accept returned ")
+			io.error.putint (err)
+			io.error.putstring ("%N")
+			if err = -1 then
+				ssl_err := c_err_get_error
+				create l_string.make_from_c (c_err_error_string (ssl_err, default_pointer.item))
+				io.error.putstring ("Reason: " + l_string + "%N")
+				connected := False
+			elseif err = 0 then
+				ssl_err := c_err_get_error
+				create l_string.make_from_c (c_err_error_string (ssl_err, default_pointer.item))
+				io.error.putstring ("Reason: " + l_string + "%N")
+			end
 		end
 
 	connect
@@ -50,6 +65,11 @@ feature -- Access
 			io.error.putint (err)
 			io.error.putstring ("%N")
 			if err = -1 then
+				ssl_err := c_err_get_error
+				create l_string.make_from_c (c_err_error_string (ssl_err, default_pointer.item))
+				io.error.putstring ("Reason: " + l_string + "%N")
+				connected := False
+			elseif err = 0 then
 				ssl_err := c_err_get_error
 				create l_string.make_from_c (c_err_error_string (ssl_err, default_pointer.item))
 				io.error.putstring ("Reason: " + l_string + "%N")
@@ -190,9 +210,9 @@ feature {NONE} -- Externals
 		end
 
 note
-	copyright:	"Copyright (c) 1984-2013, Eiffel Software and others"
-	license:	"Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
-	source:		"[
+	copyright: "Copyright (c) 1984-2013, Eiffel Software and others"
+	license: "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
+	source: "[
 			Eiffel Software
 			5949 Hollister Ave., Goleta, CA 93117 USA
 			Telephone 805-685-1006, Fax 805-685-6869
@@ -201,4 +221,3 @@ note
 		]"
 
 end
-
